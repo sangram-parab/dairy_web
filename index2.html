@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Krishna Dairy</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+    body {
+      background: linear-gradient(135deg, #fff7e6, #ffecd2);
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white; padding: 40px 50px; border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      text-align: center; animation: fadeIn 1.2s ease;
+    }
+    h1 { color: #ff9800; font-size: 2.2rem; margin-bottom: 10px; letter-spacing: 2px; }
+    input {
+      width: 80%; padding: 10px; margin: 10px 0;
+      border: 2px solid #ff9800; border-radius: 8px; font-size: 1rem;
+      transition: 0.3s;
+    }
+    input:focus { border-color: #ffb300; outline: none; transform: scale(1.03); }
+    button {
+      background: #ff9800; color: white; border: none; padding: 10px 20px;
+      border-radius: 8px; font-size: 1rem; cursor: pointer; transition: 0.3s;
+    }
+    button:hover { background: #e68900; transform: scale(1.05); }
+    .info { margin-top: 25px; font-size: 0.9rem; color: #444; line-height: 1.6; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🐄 Krishna Dairy</h1>
+    <p>Enter Customer Details</p>
+
+    <form id="customerForm">
+      <input type="text" id="customerName" placeholder="Enter Customer Name" required><br>
+      <input type="text" id="customerID" placeholder="Enter Customer ID" required><br>
+      <button type="submit">Submit</button>
+    </form>
+
+    <div class="info">
+      <p>📞 Phone: <strong>7654890654</strong></p>
+      <p>📍 Location: Krishna Dairy, Main Market Road</p>
+      <p>™ Trademark No: <strong>KD-2025-019</strong></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("customerForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("customerName").value.trim();
+      const id = document.getElementById("customerID").value.trim();
+
+      if (!name || !id) {
+        alert("Please fill both fields.");
+        return;
+      }
+
+      // Prompt for role selection
+      const role = prompt("Enter role: 'owner' or 'customer'").toLowerCase();
+
+      if (role === "owner") {
+        const password = prompt("Enter owner password:");
+        if (password !== "SangramParab") {  // Replace with your real password
+          alert("Invalid owner password.");
+          return;
+        }
+        localStorage.setItem("isOwner", "true");
+      } else if (role === "customer") {
+        localStorage.setItem("isOwner", "false");
+      } else {
+        alert("Invalid role selected.");
+        return;
+      }
+
+      localStorage.setItem("currentCustomer", JSON.stringify({ name, id }));
+      window.location.href = "record2.html";
+    });
+  </script>
+</body>
+</html>
