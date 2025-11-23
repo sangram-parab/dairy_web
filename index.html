@@ -3,73 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dairy Login</title>
+  <title>Krishna Dairy</title>
 
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Poppins, sans-serif; }
     body {
-      font-family: Poppins, sans-serif;
-      background: linear-gradient(135deg, #fff7e6, #ffe0bd);
-      padding: 30px;
+      background: linear-gradient(135deg, #fff7e6, #ffecd2);
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh;
     }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 2px solid #ff9800;
+    .container {
+      background: white; padding: 40px 50px;
+      border-radius: 18px; width: 350px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    h1 { color: #ff9800; font-size: 2rem; margin-bottom: 15px; }
+    input {
+      width: 90%; padding: 10px; margin: 10px 0;
+      border: 2px solid #ff9800; border-radius: 8px;
       font-size: 1rem;
     }
     button {
-      background: #ff9800;
-      color: white;
-      cursor: pointer;
+      width: 90%; padding: 10px;
+      background: #ff9800; color: white;
+      border: none; border-radius: 8px;
+      margin-top: 10px; cursor: pointer;
+      font-size: 1rem;
     }
-    h2 { color: #ff9800; }
+    button:hover { background: #e68900; }
+    .divider { margin: 20px 0; font-weight: bold; color: #555; }
   </style>
 </head>
 
 <body>
+  <div class="container">
+    <h1>🐄 Krishna Dairy</h1>
 
-  <h2>Owner Login</h2>
+    <!-- OWNER LOGIN -->
+    <input type="text" id="ownerName" placeholder="Owner Name">
+    <input type="password" id="ownerPassword" placeholder="Enter Owner Password">
+    <button onclick="ownerLogin()">Owner Login</button>
 
-  <input type="password" id="ownerPass" placeholder="Enter Owner Password">
-  <button onclick="ownerLogin()">Login as Owner</button>
+    <div class="divider">OR</div>
 
-  <hr><br>
+    <!-- CONSUMER LOGIN -->
+    <input type="text" id="consumerName" placeholder="Enter Consumer Name">
+    <input type="text" id="consumerID" placeholder="Enter Consumer ID">
+    <button onclick="consumerLogin()">Check Liability</button>
 
-  <h2>Consumer Login</h2>
+  </div>
 
-  <input type="text" id="cName" placeholder="Enter Consumer Name">
-  <input type="text" id="cId" placeholder="Enter Consumer ID">
-  <button onclick="consumerLogin()">Check Liability</button>
-
-<script>
-  function ownerLogin() {
-    const pass = document.getElementById("ownerPass").value;
-
-    if (pass === "123") {
+  <script>
+    function ownerLogin() {
+      const pass = document.getElementById("ownerPassword").value.trim();
+      if (pass !== "SangramParab") {
+        alert("Wrong Password");
+        return;
+      }
+      localStorage.setItem("ROLE", "OWNER");
       window.location.href = "record2.html";
-    } else {
-      alert("Incorrect password");
-    }
-  }
-
-  function consumerLogin() {
-    const name = document.getElementById("cName").value.trim();
-    const id = document.getElementById("cId").value.trim();
-
-    if (name === "" || id === "") {
-      alert("Enter both Name and ID");
-      return;
     }
 
-    // save consumer data
-    localStorage.setItem("currentConsumer", JSON.stringify({ name, id }));
+    function consumerLogin() {
+      const name = document.getElementById("consumerName").value.trim();
+      const id = document.getElementById("consumerID").value.trim();
 
-    // go to consumer-only viewing page
-    window.location.href = "consumerView.html";
-  }
-</script>
+      if (!name || !id) {
+        alert("Enter name and ID");
+        return;
+      }
 
+      localStorage.setItem("ROLE", "CONSUMER");
+      localStorage.setItem("selectedConsumer", JSON.stringify({ name, id }));
+
+      window.location.href = "consumerView.html";  // ⬅ NEW PAGE
+    }
+  </script>
 </body>
 </html>
