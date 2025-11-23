@@ -55,7 +55,12 @@
   <button id="addBtn" style="display:none;" onclick="addConsumer()">Add New Consumer</button>
 
 <script>
-  const ROLE = localStorage.getItem("ROLE");
+  // If ROLE not found → auto set to OWNER (Fixes GitHub Pages issue)
+  let ROLE = localStorage.getItem("ROLE");
+  if (!ROLE) {
+    ROLE = "OWNER";
+    localStorage.setItem("ROLE", "OWNER");
+  }
 
   const consumers = [
     { name: "Omkar", id: "100" },
@@ -97,17 +102,15 @@
     box.onclick = () => openRecordPage(user.name, user.id);
     listDiv.appendChild(box);
 
-  } else {
-    title.innerText = "Error: No Role Found";
   }
 
-  // Load record3.html
+  // Redirect to record3.html
   function openRecordPage(name, id) {
     localStorage.setItem("selectedConsumer", JSON.stringify({ name, id }));
-    window.location.href = "record3.html";    // <-- UPDATED
+    window.location.href = "record3.html";
   }
 
-  // Owner adding new consumer
+  // Add new consumer
   function addConsumer() {
     const name = prompt("Enter new consumer name:");
     const id = prompt("Enter new consumer ID:");
@@ -118,7 +121,7 @@
     }
 
     consumers.push({ name, id });
-    alert("Consumer added! (But refresh needed)");
+    alert("Consumer added! (Refresh needed)");
   }
 </script>
 
