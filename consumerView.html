@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Milk Record</title>
+
+  <style>
+    body {
+      font-family: Poppins, sans-serif;
+      background: linear-gradient(135deg, #fff7e6, #ffe0bd);
+      padding: 30px;
+    }
+    h2 { color:#ff9800; margin-bottom:15px; }
+    #detailsBox {
+      background:white; padding:20px; border-radius:12px;
+      border:2px solid #ff9800; margin-bottom:20px;
+    }
+    table {
+      width:100%; border-collapse:collapse;
+      background:white; border-radius:10px; overflow:hidden;
+    }
+    th, td {
+      padding:10px; border:1px solid #ff9800; text-align:center;
+    }
+    th { background:#ff9800; color:white; }
+    #total {
+      font-size:1.2rem;
+      margin-top:15px;
+      padding:12px;
+      background:#fff3e0;
+      border-left:5px solid #ff9800;
+    }
+    button {
+      margin-top:20px; padding:10px 15px;
+      background:#ff9800; color:white; border:none;
+      border-radius:8px; cursor:pointer; font-size:1rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Your Milk Liability Record</h2>
+
+  <div id="detailsBox"></div>
+
+  <table id="recordTable">
+    <tr>
+      <th>Date</th>
+      <th>Litres</th>
+      <th>Price</th>
+      <th>Total</th>
+    </tr>
+  </table>
+
+  <div id="total">Total Liability: ₹0</div>
+
+  <button onclick="goBack()">Back</button>
+
+<script>
+  const user = JSON.parse(localStorage.getItem("currentConsumer"));
+  const allData = JSON.parse(localStorage.getItem("milkRecords")) || {};
+
+  document.getElementById("detailsBox").innerHTML =
+    `<strong>Name:</strong> ${user.name} <br> 
+     <strong>ID:</strong> ${user.id}`;
+
+  const table = document.getElementById("recordTable");
+  const userRecords = allData[user.id] || [];
+
+  let sum = 0;
+
+  userRecords.forEach(r => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${r.date}</td>
+      <td>${r.litre}</td>
+      <td>${r.price}</td>
+      <td>${r.total}</td>
+    `;
+    table.appendChild(row);
+    sum += Number(r.total);
+  });
+
+  document.getElementById("total").innerText =
+    "Total Liability: ₹" + sum;
+
+  function goBack() {
+    window.location.href = "index.html";
+  }
+</script>
+
+</body>
+</html>
