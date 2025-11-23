@@ -1,58 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Owner Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consumer List</title>
 
   <style>
-    body {
-      font-family: Poppins, sans-serif;
-      background: linear-gradient(135deg, #fff7e6, #ffe0bd);
-      padding: 30px;
+    body { font-family: Poppins, sans-serif; background: #fff5e6; padding:40px; }
+    .consumer-box {
+      background:white; padding:15px 20px; margin-bottom:10px;
+      border-radius:12px; border:2px solid #ff9800;
+      cursor:pointer; font-size:1.1rem; transition:.2s;
     }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 2px solid #ff9800;
-      font-size: 1rem;
-    }
-    button {
-      background: #ff9800;
-      color: white;
-      cursor: pointer;
-    }
-    h2 { color: #ff9800; }
+    .consumer-box:hover { background:#fff1d6; transform:scale(1.02); }
   </style>
 </head>
 
 <body>
+  <h2>Select Consumer</h2>
 
-  <h2>Owner – Select Consumer</h2>
-
-  <input type="text" id="ownerName" placeholder="Enter Consumer Name">
-  <input type="text" id="ownerId" placeholder="Enter Consumer ID">
-
-  <button onclick="openRecordPage()">Open Record Page</button>
+  <div id="consumerList"></div>
 
 <script>
-  function openRecordPage() {
-    const name = document.getElementById("ownerName").value.trim();
-    const id = document.getElementById("ownerId").value.trim();
+  const consumers = [
+    { name: "Omkar", id: "100" },
+    { name: "Sangram", id: "101" },
+    { name: "Nikhil", id: "102" },
+    { name: "Daksha", id: "103" }
+  ];
 
-    if (name === "" || id === "") {
-      alert("Enter both Name and ID");
-      return;
-    }
+  const listDiv = document.getElementById("consumerList");
 
-    // store selected consumer for editing records
-    localStorage.setItem("selectedConsumer", JSON.stringify({ name, id }));
-
-    // owner goes to record3.html
-    window.location.href = "record3.html";
-  }
+  consumers.forEach(c => {
+    const box = document.createElement("div");
+    box.className = "consumer-box";
+    box.innerText = `${c.name} (ID: ${c.id})`;
+    box.onclick = () => {
+      localStorage.setItem("selectedConsumer", JSON.stringify(c));
+      window.location.href = "record3.html";
+    };
+    listDiv.appendChild(box);
+  });
 </script>
 
 </body>
