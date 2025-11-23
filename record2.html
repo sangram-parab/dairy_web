@@ -1,156 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Records | Krishna Dairy</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Select Consumer</title>
+
   <style>
     body {
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #fff7e6, #ffe0b2);
+      font-family: Poppins, sans-serif;
+      background: #f5f6ff;
+      text-align: center;
       padding: 30px;
     }
-    .container {
-      background: #fff;
-      border-radius: 15px;
-      padding: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      max-width: 800px;
+    h2 { color: #ff9800; margin-bottom: 20px; }
+    .box {
+      background: white;
+      width: 350px;
       margin: auto;
-      animation: fadeIn 1s ease;
-    }
-    h1 { color: #ff9800; text-align: center; margin-bottom: 20px; }
-    input {
-      padding: 10px; margin: 10px; border-radius: 8px;
-      border: 2px solid #ff9800; width: calc(30% - 20px);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     button {
+      width: 90%; padding: 10px;
       background: #ff9800; color: white; border: none;
-      padding: 10px 20px; border-radius: 8px; cursor: pointer;
-      transition: 0.3s;
+      border-radius: 8px; cursor: pointer;
+      margin: 8px 0; font-size: 1rem;
     }
-    button:hover { background: #e68900; transform: scale(1.05); }
-    table {
-      width: 100%; border-collapse: collapse; margin-top: 25px;
-    }
-    th, td {
-      border: 1px solid #ffcc80; padding: 10px; text-align: center;
-    }
-    th { background: #ffe0b2; color: #333; }
-    #total {
-      text-align: right; margin-top: 15px; font-weight: bold;
-    }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .top-bar button { margin-left: 10px; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    button:hover { background: #e68900; }
+    select {
+      width: 90%; padding: 10px; border-radius: 8px;
+      border: 2px solid #ff9800; font-size: 1rem;
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="top-bar">
-      <h1 id="custTitle">Customer Record</h1>
-      <button onclick="goBack()">🔙 Change Customer</button>
+  <div class="box">
+    <h2>Consumer Selection</h2>
+
+    <div id="ownerSection" style="display:none;">
+      <select id="consumerSelect">
+        <option value="">Select Consumer</option>
+        <option value="Omkar-100">Omkar (100)</option>
+        <option value="Sangram-101">Sangram (101)</option>
+        <option value="Nikhil-102">Nikhil (102)</option>
+        <option value="Daksha-103">Daksha (103)</option>
+        <option value="Pranav-104">Pranav (104)</option>
+        <option value="Ayush-105">Ayush (105)</option>
+        <option value="Sumant-106">Sumant (106)</option>
+        <option value="Gaurav-107">Gaurav (107)</option>
+        <option value="Yash-108">Yash (108)</option>
+        <option value="Prabhat-109">Prabhat (109)</option>
+      </select>
+
+      <button onclick="goRecord()">Open Record Page</button>
+      <button onclick="newConsumer()">Add New Consumer</button>
     </div>
 
-    <div>
-      <input type="text" id="litre" placeholder="Litres">
-      <input type="text" id="price" placeholder="Price per Litre">
-      <input type="date" id="date">
-      <button onclick="addRecord()">Add Record</button>
-      <button style="background:red;" onclick="clearAll()">Clear All Records</button>
+    <div id="consumerSection" style="display:none;">
+      <button onclick="viewMyLiability()">View My Remaining Liability</button>
     </div>
 
-    <table id="recordTable">
-      <thead>
-        <tr>
-          <th>Customer Name</th>
-          <th>Customer ID</th>
-          <th>Date</th>
-          <th>Litres</th>
-          <th>Price</th>
-          <th>Total (₹)</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div id="addConsumerSection" style="display:none;">
+      <h3>Add New Consumer</h3>
+      <input id="newName" placeholder="Name">
+      <input id="newID" placeholder="ID">
+      <button onclick="saveNew()">Save</button>
+    </div>
 
-    <div id="total">Total Liability: ₹0</div>
   </div>
 
   <script>
-    const customer = JSON.parse(localStorage.getItem("currentCustomer"));
-    if (!customer) window.location.href = "index.html";
+    const role = localStorage.getItem("role");
 
-    const key = `records_${customer.id}`;
-    document.getElementById("custTitle").textContent = `🐄 ${customer.name}'s Record`;
-
-    let records = JSON.parse(localStorage.getItem(key)) || [];
-
-    const tbody = document.querySelector("#recordTable tbody");
-    const totalEl = document.getElementById("total");
-
-    function renderTable() {
-      tbody.innerHTML = "";
-      let total = 0;
-
-      records.forEach(r => {
-        const row = `<tr>
-          <td>${r.name}</td>
-          <td>${r.id}</td>
-          <td>${r.date}</td>
-          <td>${r.litre}</td>
-          <td>${r.price}</td>
-          <td>${r.total}</td>
-        </tr>`;
-        tbody.innerHTML += row;
-        total += Number(r.total);
-      });
-
-      totalEl.textContent = `Total Liability: ₹${total.toFixed(2)}`;
+    if (role === "owner") {
+      document.getElementById("ownerSection").style.display = "block";
+    } 
+    else if (role === "consumer") {
+      document.getElementById("consumerSection").style.display = "block";
+    }
+    else if (role === "addConsumer") {
+      document.getElementById("addConsumerSection").style.display = "block";
     }
 
-    function addRecord() {
-      const litre = document.getElementById("litre").value;
-      const price = document.getElementById("price").value;
-      const date = document.getElementById("date").value;
+    function goRecord() {
+      const value = document.getElementById("consumerSelect").value;
+      if (value === "") return alert("Select a consumer.");
 
-      if (!litre || !price || !date) {
-        alert("Please fill all fields.");
+      const [name, id] = value.split("-");
+      localStorage.setItem("currentConsumer", JSON.stringify({ name, id }));
+      window.location.href = "record.html"; // your record page
+    }
+
+    function newConsumer() {
+      localStorage.setItem("role", "addConsumer");
+      window.location.reload();
+    }
+
+    function saveNew() {
+      const name = document.getElementById("newName").value.trim();
+      const id = document.getElementById("newID").value.trim();
+      if (name === "" || id === "") {
+        alert("Fill both fields.");
         return;
       }
-
-      const total = (Number(litre) * Number(price)).toFixed(2);
-
-      records.push({
-        name: customer.name,
-        id: customer.id,
-        date, litre, price, total
-      });
-
-      localStorage.setItem(key, JSON.stringify(records));
-      renderTable();
-      alert("✅ Record added successfully!");
-      document.getElementById("litre").value = "";
-      document.getElementById("price").value = "";
-      document.getElementById("date").value = "";
-    }
-
-    function clearAll() {
-      if (confirm("Are you sure you want to clear all records?")) {
-        records = [];
-        localStorage.removeItem(key);
-        renderTable();
-      }
-    }
-
-    function goBack() {
+      alert("Consumer added successfully!");
       window.location.href = "index.html";
     }
 
-    renderTable();
+    function viewMyLiability() {
+      window.location.href = "record.html";
+    }
   </script>
+
 </body>
 </html>
