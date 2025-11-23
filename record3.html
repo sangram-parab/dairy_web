@@ -1,219 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dairy Record</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Milk Record Entry</title>
 
-<style>
-  body {
-    font-family: Poppins, sans-serif;
-    background: linear-gradient(135deg, #fff7e6, #ffe0bd);
-    padding: 30px;
-  }
+  <style>
+    body {
+      font-family: Poppins, sans-serif;
+      background: linear-gradient(135deg, #fff7e6, #ffe0bd);
+      padding: 30px;
+    }
 
-  .container {
-    background: white;
-    padding: 25px;
-    border-radius: 18px;
-    max-width: 650px;
-    margin: auto;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.15);
-  }
+    h2 { color: #333; margin-bottom: 10px; }
+    h3 { color: #555; margin-bottom: 20px; }
 
-  h2 {
-    text-align: center;
-    color: #ff8f00;
-    margin-bottom: 10px;
-  }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 3px 8px rgba(0,0,0,0.15);
+      max-width: 500px;
+      margin-bottom: 25px;
+    }
 
-  .inputBox {
-    margin-bottom: 15px;
-  }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 1rem;
+    }
 
-  .inputBox input {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #ff9800;
-    border-radius: 10px;
-    font-size: 1rem;
-  }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 10px;
+      border: 2px solid #ff9800;
+      outline: none;
+    }
 
-  .inputBox input:focus {
-    border-color: #ffa726;
-    outline: none;
-  }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #ff9800;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: .3s;
+    }
 
-  button {
-    width: 100%;
-    background: #ff9800;
-    color: white;
-    border: none;
-    padding: 12px;
-    font-size: 1rem;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: .2s;
-  }
+    button:hover { background: #e68900; }
 
-  button:hover {
-    background: #e68900;
-    transform: scale(1.03);
-  }
+    table {
+      width: 100%;
+      background: white;
+      border-radius: 10px;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
 
-  table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-  }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
 
-  table, th, td {
-    border: 1px solid #ffb74d;
-  }
-
-  th, td {
-    padding: 10px;
-    text-align: center;
-  }
-
-  th {
-    background: #ffe3b3;
-  }
-
-  .totalBox {
-    margin-top: 15px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-align: center;
-    color: #d67a00;
-  }
-</style>
+    th {
+      background: #ff9800;
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h2 id="titleName">Loading...</h2>
-  <p style="text-align:center; font-weight:600;" id="roleText"></p>
+  <h2>Milk Record</h2>
+  <h3 id="consumerName"></h3>
 
-  <div id="ownerSection">
+  <div class="card">
+    <label>Date</label>
+    <input type="date" id="date">
 
-    <div class="inputBox">
-      <input type="number" id="litres" placeholder="Milk Litres">
-    </div>
+    <label>Milk Quantity (Liters)</label>
+    <input type="number" id="qty" placeholder="Enter quantity">
 
-    <div class="inputBox">
-      <input type="number" id="price" placeholder="Price Per Litre">
-    </div>
-
-    <div class="inputBox">
-      <input type="date" id="date">
-    </div>
+    <label>Rate (₹ per Liter)</label>
+    <input type="number" id="rate" placeholder="Enter rate">
 
     <button onclick="saveRecord()">Save Record</button>
   </div>
 
-  <div class="totalBox">
-    Total Liability: ₹ <span id="totalLiability">0</span>
-  </div>
-
+  <h3>Previous Records</h3>
   <table id="recordTable">
     <thead>
       <tr>
-        <th>Litres</th>
-        <th>Price</th>
-        <th>Total</th>
         <th>Date</th>
+        <th>Qty (L)</th>
+        <th>Rate</th>
+        <th>Total</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
-</div>
 
 <script>
-  const ROLE = localStorage.getItem("ROLE");
-  const selected = JSON.parse(localStorage.getItem("selectedConsumer"));
+  // Get selected consumer from record2.html
+  const consumer = JSON.parse(localStorage.getItem("selectedConsumer"));
+  document.getElementById("consumerName").innerText =
+    consumer.name + " (ID: " + consumer.id + ")";
 
-  if (!selected) {
-    alert("No consumer selected!");
-    window.location.href = "record2.html";
-  }
+  // Storage Key for this consumer
+  const STORAGE_KEY = "records_" + consumer.id;
 
-  document.getElementById("titleName").innerText =
-    selected.name + " (ID: " + selected.id + ")";
-
-  document.getElementById("roleText").innerText =
-    ROLE === "OWNER" ? "Owner Mode — Add Records" : "Consumer Mode — View Only";
-
-  if (ROLE !== "OWNER") {
-    document.getElementById("ownerSection").style.display = "none";
-  }
-
-  function getKey() {
-    return "records_" + selected.id;
-  }
-
-  function loadRecords() {
-    let data = localStorage.getItem(getKey());
-    return data ? JSON.parse(data) : [];
-  }
-
-  function saveToStorage(records) {
-    localStorage.setItem(getKey(), JSON.stringify(records));
-  }
-
-  function renderTable() {
-    const tbody = document.querySelector("#recordTable tbody");
-    tbody.innerHTML = "";
-    let records = loadRecords();
-    let totalLiability = 0;
-
-    records.forEach(r => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${r.litres}</td>
-        <td>₹${r.price}</td>
-        <td>₹${r.total}</td>
-        <td>${r.date}</td>
-      `;
-      totalLiability += r.total;
-      tbody.appendChild(row);
-    });
-
-    document.getElementById("totalLiability").innerText = totalLiability;
-  }
+  // Load old records
+  let records = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
   function saveRecord() {
-    if (ROLE !== "OWNER") {
-      alert("Only owner can add records.");
-      return;
-    }
-
-    const litres = document.getElementById("litres").value;
-    const price = document.getElementById("price").value;
     const date = document.getElementById("date").value;
+    const qty = parseFloat(document.getElementById("qty").value);
+    const rate = parseFloat(document.getElementById("rate").value);
 
-    if (!litres || !price || !date) {
-      alert("Fill all fields.");
+    if (!date || !qty || !rate) {
+      alert("Please enter all fields.");
       return;
     }
 
-    const total = litres * price;
+    const total = qty * rate;
 
-    let records = loadRecords();
-    records.push({ litres, price, total, date });
+    const entry = { date, qty, rate, total };
+    records.push(entry);
 
-    saveToStorage(records);
+    // Save back to localStorage
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
 
-    document.getElementById("litres").value = "";
-    document.getElementById("price").value = "";
-    document.getElementById("date").value = "";
+    alert("Record Saved!");
 
-    renderTable();
+    loadTable();
   }
 
-  renderTable();
+  function loadTable() {
+    const tbody = document.querySelector("#recordTable tbody");
+    tbody.innerHTML = "";
+
+    records.forEach(r => {
+      const row = `
+        <tr>
+          <td>${r.date}</td>
+          <td>${r.qty}</td>
+          <td>₹${r.rate}</td>
+          <td>₹${r.total}</td>
+        </tr>
+      `;
+      tbody.innerHTML += row;
+    });
+  }
+
+  // Load table at start
+  loadTable();
 </script>
 
 </body>
