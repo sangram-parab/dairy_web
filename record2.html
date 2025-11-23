@@ -1,127 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Consumer List</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owner Panel</title>
 
   <style>
     body {
       font-family: Poppins, sans-serif;
       background: linear-gradient(135deg, #fff7e6, #ffe0bd);
-      padding: 40px;
+      padding: 30px;
     }
-
-    h2 { color: #333; margin-bottom: 20px; }
-
-    .consumer-box {
-      background: white;
-      padding: 15px 20px;
-      margin-bottom: 10px;
-      border-radius: 12px;
-      cursor: pointer;
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
       border: 2px solid #ff9800;
-      transition: .2s;
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
-
-    .consumer-box:hover {
-      background: #fff3e0;
-      transform: scale(1.02);
-    }
-
     button {
-      padding: 12px 20px;
-      margin-top: 20px;
       background: #ff9800;
       color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
       cursor: pointer;
-      transition: .3s;
     }
-
-    button:hover { background: #e68900; }
+    h2 { color: #ff9800; }
   </style>
 </head>
 
 <body>
 
-  <h2 id="titleText">Loading...</h2>
+  <h2>Owner – Select Consumer</h2>
 
-  <div id="consumerList"></div>
+  <input type="text" id="ownerName" placeholder="Enter Consumer Name">
+  <input type="text" id="ownerId" placeholder="Enter Consumer ID">
 
-  <button id="addBtn" style="display:none;" onclick="addConsumer()">Add New Consumer</button>
+  <button onclick="openRecordPage()">Open Record Page</button>
 
 <script>
-  // If ROLE not found → auto set to OWNER (Fixes GitHub Pages issue)
-  let ROLE = localStorage.getItem("ROLE");
-  if (!ROLE) {
-    ROLE = "OWNER";
-    localStorage.setItem("ROLE", "OWNER");
-  }
+  function openRecordPage() {
+    const name = document.getElementById("ownerName").value.trim();
+    const id = document.getElementById("ownerId").value.trim();
 
-  const consumers = [
-    { name: "Omkar", id: "100" },
-    { name: "Sangram", id: "101" },
-    { name: "Nikhil", id: "102" },
-    { name: "Daksha", id: "103" },
-    { name: "Pranav", id: "104" },
-    { name: "Ayush", id: "105" },
-    { name: "Sumant", id: "106" },
-    { name: "Gaurav", id: "107" },
-    { name: "Yash", id: "108" },
-    { name: "Prabhat", id: "109" }
-  ];
-
-  const listDiv = document.getElementById("consumerList");
-  const title = document.getElementById("titleText");
-
-  if (ROLE === "OWNER") {
-    title.innerText = "Select Consumer to Add Records";
-
-    consumers.forEach(c => {
-      const box = document.createElement("div");
-      box.className = "consumer-box";
-      box.innerText = `${c.name} (ID: ${c.id})`;
-      box.onclick = () => openRecordPage(c.name, c.id);
-      listDiv.appendChild(box);
-    });
-
-    document.getElementById("addBtn").style.display = "block";
-
-  } else if (ROLE === "CONSUMER") {
-
-    const user = JSON.parse(localStorage.getItem("currentConsumer"));
-    title.innerText = "Your Account";
-
-    const box = document.createElement("div");
-    box.className = "consumer-box";
-    box.innerText = `${user.name} (ID: ${user.id})`;
-    box.onclick = () => openRecordPage(user.name, user.id);
-    listDiv.appendChild(box);
-
-  }
-
-  // Redirect to record3.html
-  function openRecordPage(name, id) {
-    localStorage.setItem("selectedConsumer", JSON.stringify({ name, id }));
-    window.location.href = "record3.html";
-  }
-
-  // Add new consumer
-  function addConsumer() {
-    const name = prompt("Enter new consumer name:");
-    const id = prompt("Enter new consumer ID:");
-
-    if (!name || !id) {
-      alert("Both fields required.");
+    if (name === "" || id === "") {
+      alert("Enter both Name and ID");
       return;
     }
 
-    consumers.push({ name, id });
-    alert("Consumer added! (Refresh needed)");
+    // store selected consumer for editing records
+    localStorage.setItem("selectedConsumer", JSON.stringify({ name, id }));
+
+    // owner goes to record3.html
+    window.location.href = "record3.html";
   }
 </script>
 
