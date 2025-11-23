@@ -8,7 +8,7 @@
   <style>
     body {
       font-family: Poppins, sans-serif;
-      background: #f0f4ff;
+      background: linear-gradient(135deg, #fff7e6, #ffe0bd);
       padding: 40px;
     }
 
@@ -18,14 +18,16 @@
       background: white;
       padding: 15px 20px;
       margin-bottom: 10px;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       border: 2px solid #ff9800;
       transition: .2s;
+      font-size: 1.1rem;
     }
 
     .consumer-box:hover {
       background: #fff3e0;
+      transform: scale(1.02);
     }
 
     button {
@@ -37,7 +39,10 @@
       border-radius: 10px;
       font-size: 1rem;
       cursor: pointer;
+      transition: .3s;
     }
+
+    button:hover { background: #e68900; }
   </style>
 </head>
 
@@ -96,10 +101,10 @@
     title.innerText = "Error: No Role Found";
   }
 
-  // Load next page
+  // Load record3.html
   function openRecordPage(name, id) {
     localStorage.setItem("selectedConsumer", JSON.stringify({ name, id }));
-    window.location.href = "record.html";    // <-- MAIN WORKING LINE
+    window.location.href = "record3.html";    // <-- UPDATED
   }
 
   // Owner adding new consumer
@@ -108,12 +113,12 @@
     const id = prompt("Enter new consumer ID:");
 
     if (!name || !id) {
-      alert("Both fields are needed.");
+      alert("Both fields required.");
       return;
     }
 
     consumers.push({ name, id });
-    alert("Consumer added! Refresh page.");
+    alert("Consumer added! (But refresh needed)");
   }
 </script>
 
