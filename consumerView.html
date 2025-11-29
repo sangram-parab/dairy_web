@@ -11,37 +11,87 @@
       background: linear-gradient(135deg, #fff7e6, #ffe0bd);
       padding: 30px;
     }
-    h2 { color:#ff9800; margin-bottom:15px; }
+    h2 { 
+      color:#ff9800; 
+      margin-bottom:15px; 
+      font-size:1.8rem;
+      text-align:center;
+    }
+
     #detailsBox {
-      background:white; padding:20px; border-radius:12px;
-      border:2px solid #ff9800; margin-bottom:20px;
+      background:white; 
+      padding:20px; 
+      border-radius:12px;
+      border:2px solid #ff9800; 
+      margin-bottom:25px;
+      font-size:1.1rem;
+      box-shadow:0 4px 10px rgba(0,0,0,0.08);
     }
+
     table {
-      width:100%; border-collapse:collapse;
-      background:white; border-radius:10px; overflow:hidden;
+      width:100%; 
+      border-collapse:collapse;
+      background:white; 
+      border-radius:12px; 
+      overflow:hidden;
+      box-shadow:0 4px 12px rgba(0,0,0,0.1);
     }
-    th, td {
-      padding:10px; border:1px solid #ff9800; text-align:center;
+
+    th {
+      padding:12px; 
+      background:#ff9800; 
+      color:white;
+      font-size:1.1rem;
     }
-    th { background:#ff9800; color:white; }
-    #total {
-      font-size:1.2rem;
-      margin-top:15px;
-      padding:12px;
-      background:#fff3e0;
-      border-left:5px solid #ff9800;
+
+    td {
+      padding:12px; 
+      border-bottom:1px solid #ffe0bd; 
+      text-align:center; 
+      font-size:1rem;
     }
+
+    tr:hover {
+      background:#fff5e6;
+    }
+
+    #summaryBox {
+      margin-top:25px; 
+      padding:18px;
+      background:white; 
+      border-radius:12px;
+      border-left:6px solid #ff9800;
+      box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .line {
+      font-size:1.3rem;
+      margin-bottom:8px;
+    }
+
+    .highlight {
+      color:#d35400;
+      font-weight:600;
+    }
+
     button {
-      margin-top:20px; padding:10px 15px;
-      background:#ff9800; color:white; border:none;
-      border-radius:8px; cursor:pointer; font-size:1rem;
+      margin-top:25px; 
+      padding:12px 18px;
+      background:#ff9800; 
+      color:white; 
+      border:none;
+      border-radius:8px; 
+      cursor:pointer; 
+      font-size:1.1rem;
+      width:100%;
     }
+    button:hover { background:#e68900; }
   </style>
 </head>
 
 <body>
 
-  <h2>Your Milk Liability Record</h2>
+  <h2>Milk Liability Record</h2>
 
   <div id="detailsBox"></div>
 
@@ -54,12 +104,15 @@
     </tr>
   </table>
 
-  <div id="total">Total Liability: ₹0</div>
+  <div id="summaryBox">
+    <div class="line"><strong>Total Liability:</strong> <span id="total" class="highlight">₹0</span></div>
+    <div class="line"><strong>Remaining to Pay:</strong> <span id="remaining" class="highlight">₹0</span></div>
+  </div>
 
   <button onclick="goBack()">Back</button>
 
 <script>
-  // GET CONSUMER
+  // GET CONSUMER INFO
   const user = JSON.parse(localStorage.getItem("currentConsumer"));
 
   // SHOW NAME + ID
@@ -67,33 +120,33 @@
     `<strong>Name:</strong> ${user.name} <br> 
      <strong>ID:</strong> ${user.id}`;
 
-  // TABLE
+  // TABLE REFERENCE
   const table = document.getElementById("recordTable");
 
-  // CORRECT STORAGE KEY (from record3.html)
+  // KEY USED IN record3.html
   const key = `records_${user.id}`;
 
-  // READ SAVED DATA
+  // LOAD RECORDS
   const userRecords = JSON.parse(localStorage.getItem(key)) || [];
 
-  let sum = 0;
+  let totalLiability = 0;
 
-  // SHOW EACH RECORD
+  // INSERT ROWS
   userRecords.forEach(r => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${r.date}</td>
       <td>${r.litre}</td>
       <td>${r.rate}</td>
-      <td>${r.amount}</td>
+      <td>₹${r.amount}</td>
     `;
     table.appendChild(row);
-    sum += Number(r.amount);
+    totalLiability += Number(r.amount);
   });
 
-  // UPDATE TOTAL LIABILITY
-  document.getElementById("total").innerText =
-    "Total Liability: ₹" + sum;
+  // SHOW TOTAL & REMAINING
+  document.getElementById("total").innerText = "₹" + totalLiability;
+  document.getElementById("remaining").innerText = "₹" + totalLiability;
 
   function goBack() {
     window.location.href = "index.html";
