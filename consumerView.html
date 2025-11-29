@@ -49,7 +49,7 @@
     <tr>
       <th>Date</th>
       <th>Litres</th>
-      <th>Price</th>
+      <th>Rate</th>
       <th>Total</th>
     </tr>
   </table>
@@ -59,30 +59,39 @@
   <button onclick="goBack()">Back</button>
 
 <script>
+  // GET CONSUMER
   const user = JSON.parse(localStorage.getItem("currentConsumer"));
-  const allData = JSON.parse(localStorage.getItem("milkRecords")) || {};
 
+  // SHOW NAME + ID
   document.getElementById("detailsBox").innerHTML =
     `<strong>Name:</strong> ${user.name} <br> 
      <strong>ID:</strong> ${user.id}`;
 
+  // TABLE
   const table = document.getElementById("recordTable");
-  const userRecords = allData[user.id] || [];
+
+  // CORRECT STORAGE KEY (from record3.html)
+  const key = `records_${user.id}`;
+
+  // READ SAVED DATA
+  const userRecords = JSON.parse(localStorage.getItem(key)) || [];
 
   let sum = 0;
 
+  // SHOW EACH RECORD
   userRecords.forEach(r => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${r.date}</td>
       <td>${r.litre}</td>
-      <td>${r.price}</td>
-      <td>${r.total}</td>
+      <td>${r.rate}</td>
+      <td>${r.amount}</td>
     `;
     table.appendChild(row);
-    sum += Number(r.total);
+    sum += Number(r.amount);
   });
 
+  // UPDATE TOTAL LIABILITY
   document.getElementById("total").innerText =
     "Total Liability: ₹" + sum;
 
